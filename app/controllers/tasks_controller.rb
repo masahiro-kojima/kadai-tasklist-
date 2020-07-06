@@ -1,27 +1,41 @@
 class TasksController < ApplicationController
+
+before_action :require_user_logged_in,only: [:index,:show]
+before_action :correct_user, only: [:destroy]
+
   def index
-    @tasks = Task.all
+   if logged_in?
+      # @task = current_user.tasks.build  # form_with 用
+      @tasks = current_user.tasks
+   end
   end
 
   def show
+
     @task = Task.find(params[:id])
+
   end
 
 
   def new
-    @task = Task.new
+    if logged_in?
+    @task = current_user.tasks.build  # form_with 用
+    end
   end
 
 
   def create
-    @task = Task.new(task_params)
+    @task= current_user.tasks.build(task_params)
+
 
     if @task.save
+                        # binding.pry
       flash[:success] = 'task が正常に投稿されました'
       redirect_to @task
     else
+      @tasks = current_user.microposts
       flash.now[:danger] = 'task が投稿されませんでした'
-      render :new
+      render 'tasks/index'
     end
   end
 
@@ -44,11 +58,12 @@ class TasksController < ApplicationController
 
 
   def destroy
-    @task = Task.find(params[:id])
+
     @task.destroy
 
     flash[:success] = 'task は正常に削除されました'
-    redirect_to tasks_url
+    redirect_to root_path
+    # redirect_back(fallback_location: root_path)
   end
 
 
@@ -59,5 +74,10 @@ class TasksController < ApplicationController
     params.require(:task).permit(:content, :status)
   end
 
-
+  def correct_user
+    @task  = current_user.tasks.find_by(id: params[:id])
+    unless @task 
+    redirect_to root_url
+    end
+  end
 end

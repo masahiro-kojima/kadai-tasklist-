@@ -1,0 +1,9 @@
+<ul class="list-unstyled">
+  <% tasks.each do |task| %>
+    <div>
+      <li><%= link_to task.id, task_path(task.id)%> <span class="text-muted">posted at <%= task.created_at %></span></li>
+      <li><%= task.status %>&gt;<%= task.content %></li>
+    </div>
+  <%end%>
+</ul>
+
