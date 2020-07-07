@@ -1,18 +1,13 @@
 class TasksController < ApplicationController
 
 before_action :require_user_logged_in,only: [:index,:show]
-before_action :correct_user, only: [:destroy]
+before_action :correct_user, only: [:destroy,:show,:edit]
 
   def index
-   if logged_in?
-      # @task = current_user.tasks.build  # form_with 用
       @tasks = current_user.tasks
-   end
   end
 
   def show
-
-    @task = Task.find(params[:id])
 
   end
 
@@ -45,7 +40,6 @@ before_action :correct_user, only: [:destroy]
 
 
   def update
-    @task = Task.find(params[:id])
 
     if @task.update(task_params)
       flash[:success] = 'task は正常に更新されました'
