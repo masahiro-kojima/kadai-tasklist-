@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
 
-before_action :require_user_logged_in,only: [:index,:show]
+before_action :require_user_logged_in
 before_action :correct_user, only: [:destroy,:show,:edit,:update]
 
   def index
@@ -13,9 +13,7 @@ before_action :correct_user, only: [:destroy,:show,:edit,:update]
 
 
   def new
-    if logged_in?
     @task = current_user.tasks.build  # form_with 用
-    end
   end
 
 
@@ -30,7 +28,7 @@ before_action :correct_user, only: [:destroy,:show,:edit,:update]
     else
       @tasks = current_user.tasks.all
       flash.now[:danger] = 'task が投稿されませんでした'
-      render 'index'
+      render 'new'
     end
   end
 
@@ -44,7 +42,7 @@ before_action :correct_user, only: [:destroy,:show,:edit,:update]
       redirect_to @task
     else
       flash.now[:danger] = 'task は更新されませんでした'
-      render :edit
+      render :new
     end
   end
 
